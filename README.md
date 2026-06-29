@@ -11,8 +11,7 @@ kill target wins. Now with **chiptune music + sound effects** and lots of **expl
 - **Mute:** 🔊 button (top-right)
 - **Mobile:** left thumb drives (point where to go), right thumb aims & fires, BOOST button bottom-right. Best in landscape.
 
-Grab pickups on the map: 💚 health · 🚀 rockets (temporary heavy weapon) · ⚡ nitro (instant boost).
-Use the obstacles for cover — they block bullets.
+Grab pickups on the open arena: 💚 health · 🚀 rockets (temporary heavy weapon) · ⚡ nitro (instant boost).
 
 ### Vehicle classes (pick in the lobby)
 | | Class | Profile |

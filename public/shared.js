@@ -56,16 +56,8 @@
   };
   const VEHICLE_ORDER = ['racer', 'tank', 'striker', 'bruiser'];
 
-  // Static cover obstacles (axis-aligned rectangles), symmetric layout.
-  const OBSTACLES = [
-    { x: 610, y: 320, w: 60, h: 80 },     // center block
-    { x: 360, y: 130, w: 110, h: 26 },
-    { x: 810, y: 130, w: 110, h: 26 },
-    { x: 360, y: 564, w: 110, h: 26 },
-    { x: 810, y: 564, w: 110, h: 26 },
-    { x: 230, y: 300, w: 26, h: 120 },
-    { x: 1024, y: 300, w: 26, h: 120 }
-  ];
+  // Open arena — no walls.
+  const OBSTACLES = [];
 
   const BOOST = { mult: 1.7, time: 1.4, cooldown: 5 };
 
