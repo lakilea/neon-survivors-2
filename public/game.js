@@ -73,14 +73,42 @@
   const getName = () => { const n = nameInput.value.trim(); localStorage.setItem('nc_name', n); return n || 'Driver'; };
   const menuError = (m) => $('menuError').textContent = m || '';
 
-  $('createBtn').onclick = () => { ensureAudio(); AUDIO.sfx.ui(); menuError(''); socket.emit('createRoom', { name: getName() }, (res) => { if (!res || !res.ok) return menuError(res && res.error || 'Could not create room'); youId = res.youId; }); };
+  // ---- connection status (so Create/Join never fail silently) ----
+  const connStatus = $('connStatus');
+  function setConn(state) {
+    if (state === 'connecting') { connStatus.textContent = 'Connecting to server…'; connStatus.style.color = 'var(--warn)'; }
+    else if (state === 'connected') { connStatus.textContent = 'Connected ✓'; connStatus.style.color = 'var(--good)'; setTimeout(() => { if (socket.connected && connStatus.textContent === 'Connected ✓') connStatus.textContent = ''; }, 1500); }
+    else if (state === 'lost') { connStatus.textContent = 'Connection lost — reconnecting…'; connStatus.style.color = 'var(--warn)'; }
+    else if (state === 'error') { connStatus.textContent = 'Can’t reach the server — free hosting may be waking up (~30s). Retrying…'; connStatus.style.color = 'var(--warn)'; }
+  }
+  setConn('connecting');
+  socket.on('connect', () => setConn('connected'));
+  socket.io.on('reconnect_attempt', () => setConn('connecting'));
+  socket.on('connect_error', () => setConn('error'));
+
+  $('createBtn').onclick = () => {
+    ensureAudio(); AUDIO.sfx.ui(); menuError('');
+    if (!socket.connected) menuError('Still connecting to the server — one moment…');
+    socket.timeout(12000).emit('createRoom', { name: getName() }, (err, res) => {
+      if (err) return menuError('Server didn’t respond — it may be waking up (free hosting sleeps when idle). Wait ~30s and try again.');
+      if (!res || !res.ok) return menuError(res && res.error || 'Could not create room');
+      youId = res.youId;
+    });
+  };
   $('joinBtn').onclick = doJoin;
   $('codeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') doJoin(); });
   function doJoin() {
-    menuError('');
+    ensureAudio(); AUDIO.sfx.ui(); menuError('');
     const code = $('codeInput').value.trim().toUpperCase();
-    if (code.length !== 4) return menuError('Enter a 4-character room code');
-    socket.emit('joinRoom', { name: getName(), code }, (res) => { if (!res || !res.ok) return menuError(res && res.error || 'Could not join'); youId = res.youId; });
+    if (code.length !== 4) return menuError('Enter the 4-character room code');
+    if (!socket.connected) menuError('Still connecting to the server — one moment…');
+    socket.timeout(12000).emit('joinRoom', { name: getName(), code }, (err, res) => {
+      if (err) return menuError('Server didn’t respond — it may be waking up (free hosting). Wait ~30s and try Join again.');
+      if (!res || !res.ok) return menuError((res && res.error === 'Room not found')
+        ? 'Room not found — check the code, and make sure you both opened the same link (the onrender.com URL).'
+        : (res && res.error) || 'Could not join');
+      youId = res.youId;
+    });
   }
 
   // ---------------- LOBBY ----------------
@@ -173,7 +201,7 @@
     show('gameover');
   });
   $('lobbyBtn').onclick = () => socket.emit('returnToLobby');
-  socket.on('disconnect', () => { stopGameLoop(); menuError('Disconnected.'); show('menu'); });
+  socket.on('disconnect', () => { stopGameLoop(); setConn('lost'); show('menu'); });
 
   // ---------------- INPUT ----------------
   const canvas = $('canvas'); const ctx = canvas.getContext('2d'); ctx.imageSmoothingEnabled = false;
