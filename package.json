@@ -1,0 +1,17 @@
+{
+  "name": "neon-survivors-2",
+  "version": "0.1.0",
+  "description": "Neon Survivors 2 — online team vehicular combat (browser, pixel art)",
+  "type": "commonjs",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}

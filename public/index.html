@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Neon Survivors 2 — Team Car Combat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- MENU -->
+    <section id="menu" class="screen active">
+      <div class="panel">
+        <h1 class="logo">NEON<span>SURVIVORS 2</span></h1>
+        <p class="tagline">Team vehicular combat · up to 8 players</p>
+        <label class="field"><span>Your name</span>
+          <input id="nameInput" maxlength="16" placeholder="Driver" autocomplete="off" />
+        </label>
+        <button id="createBtn" class="btn primary big">Create Room</button>
+        <div class="divider"><span>or join a friend</span></div>
+        <div class="join-row">
+          <input id="codeInput" maxlength="4" placeholder="CODE" class="code-field" autocomplete="off" />
+          <button id="joinBtn" class="btn">Join</button>
+        </div>
+        <p id="menuError" class="error"></p>
+      </div>
+      <footer class="hint">Desktop: WASD drive · Mouse aim &amp; shoot · Space boost<br>Mobile: left thumb drives · right thumb aims &amp; fires · best in landscape</footer>
+    </section>
+
+    <!-- LOBBY -->
+    <section id="lobby" class="screen">
+      <div class="lobby-wrap">
+        <header class="lobby-head">
+          <div>
+            <h2>Lobby</h2>
+            <div class="room-code">Room code: <b id="roomCode">----</b>
+              <button id="copyBtn" class="btn tiny">Copy</button>
+            </div>
+          </div>
+          <button id="leaveBtn" class="btn tiny ghost">Leave</button>
+        </header>
+
+        <div class="lobby-grid">
+          <div>
+            <h3>Choose your ride</h3>
+            <div id="vehPicker" class="veh-picker"></div>
+            <h3 style="margin-top:18px">Match mode</h3>
+            <div class="mode-picker">
+              <button class="mode-btn" data-mode="1v1">1 v 1</button>
+              <button class="mode-btn" data-mode="2v2">2 v 2</button>
+              <button class="mode-btn" data-mode="cpu">vs CPU</button>
+            </div>
+            <p class="hint small" id="modeHint" style="margin-top:8px"></p>
+            <h3 style="margin-top:18px">Team</h3>
+            <div class="team-picker">
+              <button class="team-btn red" data-team="red">🔴 Red Team</button>
+              <button class="team-btn blue" data-team="blue">🔵 Blue Team</button>
+            </div>
+          </div>
+          <div>
+            <h3>Teams</h3>
+            <div class="teams-cols">
+              <ul id="redList" class="player-list team-red"></ul>
+              <ul id="blueList" class="player-list team-blue"></ul>
+            </div>
+            <div class="lobby-actions">
+              <button id="readyBtn" class="btn primary big">Ready</button>
+              <button id="startBtn" class="btn big" disabled>Start</button>
+            </div>
+            <p id="lobbyHint" class="hint small"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="game" class="screen">
+      <div class="stage">
+        <canvas id="canvas" width="1280" height="720"></canvas>
+        <button id="fsBtn" class="fs-btn" title="Fullscreen">⛶</button>
+        <button id="muteBtn" class="mute-btn" title="Mute / unmute">🔊</button>
+        <div id="hud">
+          <div class="score-bar">
+            <span class="score red"><b id="redScore">0</b></span>
+            <span class="score-target">first to <b id="killTarget">30</b></span>
+            <span class="score blue"><b id="blueScore">0</b></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME OVER -->
+    <section id="gameover" class="screen">
+      <div class="panel">
+        <h1 id="winnerTitle" class="over">RED WINS</h1>
+        <p id="overSummary" class="tagline"></p>
+        <ul id="overStats" class="over-stats"></ul>
+        <button id="lobbyBtn" class="btn primary big">Back to Lobby</button>
+        <p id="overWait" class="hint small"></p>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="rotate">
+    <div class="rot-inner"><span class="rot-icon">↻</span>Rotate your phone<br>to landscape to play<small>the game fills the screen sideways</small></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="shared.js"></script>
+  <script src="sprites.js"></script>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
